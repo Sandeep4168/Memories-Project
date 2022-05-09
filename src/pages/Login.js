@@ -15,7 +15,8 @@ import { useDispatch,useSelector } from 'react-redux'
 import {toast} from "react-toastify"
 import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { login } from '../redux/features/authSlice'
+import { login,googleSignIn } from '../redux/features/authSlice'
+import {GoogleLogin } from "react-google-login"
 
 
 const initialState = {
@@ -26,7 +27,7 @@ const initialState = {
 const Login = () => {
 
   const [formValue,setFormValue] = useState(initialState);
-
+  const { loading, error } = useSelector((state) => ({ ...state.auth }));
   const {email,password} = formValue;
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -38,12 +39,35 @@ const Login = () => {
     }
   };
 
+  // const googleSuccess = (resp) => {
+  //   const email = resp?.profileObj?.email;
+  //   const name = resp?.profileObj?.name;
+  //   const token = resp?.tokenId;
+  //   const googleId = resp?.googleId;
+  //   const result = { email, name, token, googleId };
+  //   console.log(resp)
+  //   dispatch(googleSignIn({ result, navigate, toast }));
+  // };
+
+  // const googleFailure = (error) => {
+  //   toast.error(error);
+  // };
+
+  const googleSuccess = (resp) => {
+    console.log(resp);
+  }
+  const googleFailure = (err) => {
+    toast.error(err);
+  }
+
+  const responseGoogle = response => {
+    console.log(response);
+  };
+
 
   const onInputChange = (e) => {
-    let {name,value} = e.target;
-    console.log(name,value);
+    let {name,value} = e.target
     setFormValue({...formValue,[name]:value});
-    console.log({...formValue,[name]:value})
   };
 
   return (
@@ -74,12 +98,19 @@ const Login = () => {
               invalid
               validation="Please provide your password"/>
             </div>
-            <div>
-              <MDBBtn style={{width:"100%"}} className="mt-2">
+            <div className="col-12">
+              <MDBBtn style={{ width: "100%" }} className="mt-2">
+                {loading && (
+                  <MDBSpinner
+                    size="sm"
+                    role="status"
+                    tag="span"
+                    className="me-2"
+                  />
+                )}
                 Login
               </MDBBtn>
             </div>
-
           </MDBValidation>
         </MDBCardBody>
         <MDBCardFooter>
