@@ -12,6 +12,7 @@ import Header from '../../client/src/components/Header'
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import {setUser} from "../src/redux/features/authSlice"
+import SingleMemory from './pages/SingleMemory';
 
 function App() {
   const dispatch = useDispatch();
@@ -32,6 +33,7 @@ function App() {
           <Route path='/login' element={<Login/>}/>
           <Route path='/register' element={<Register/>}/>
           <Route path='/addMemory' element={<AddEditMemory/>}/>
+          <Route path='/memory/:id' element={<SingleMemory/>}/>
         </Routes>
 
       </div>

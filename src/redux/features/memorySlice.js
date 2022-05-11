@@ -26,6 +26,17 @@ export const getMemory = createAsyncThunk("memory/getMemory",async(_,{rejectWith
     }
 })
 
+export const getSingleMemory = createAsyncThunk("memory/getSingleMemory",async(id,{rejectWithValue}) => {
+    try{
+        const response= await api.getMemory(id);
+       
+        return response.data;
+
+    }catch(err){
+        return rejectWithValue(err.response.data);
+    }
+})
+
 const memorySlice = createSlice({
     name:"memory",
     initialState:{
@@ -53,9 +64,20 @@ const memorySlice = createSlice({
         },
         [getMemory.fulfilled] : (state,action) => {
             state.loading = false;
-            state.memories = [action.payload];
+            state.memories = action.payload;
         },
         [getMemory.rejected]:(state,action) => {
+            state.loading = false;
+            state.error = action.payload.message;
+        },
+        [getSingleMemory.pending]: (state,action) => {
+            state.loading = true
+        },
+        [getSingleMemory.fulfilled] : (state,action) => {
+            state.loading = false;
+            state.memory = action.payload;
+        },
+        [getSingleMemory.rejected]:(state,action) => {
             state.loading = false;
             state.error = action.payload.message;
         },
