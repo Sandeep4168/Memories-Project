@@ -10,10 +10,10 @@ import {
 import ChipInput from "material-ui-chip-input"
 import FileBase from "react-file-base64"
 import {toast} from "react-toastify"
-import {Navigate, useNavigate, UseNavigate} from "react-router-dom"
+import {Navigate, useNavigate, useParam, useParams} from "react-router-dom"
 import { useDispatch,useSelector } from 'react-redux'
 import { useEffect } from 'react'
-import { createMemory } from '../redux/features/memorySlice'
+import { createMemory,updateMemory } from '../redux/features/memorySlice'
 
 const initialState = {
     title:"",
@@ -29,7 +29,8 @@ const AddEditMemory = () => {
 
 const [memoryData,setMemoryData] = useState(initialState);
 const {title,description,tags} = memoryData;
-const {error,loading} = useSelector((state) => ({...state.memory}));
+const {id} = useParams();
+const {error,loading,userMemories} = useSelector((state) => ({...state.memory}));
 const {user} = useSelector((state) => ({...state.auth}));
 const dispatch = useDispatch();
 const navigate = useNavigate();
@@ -38,6 +39,12 @@ useEffect(() => {
     error && toast.error(error);
 },[error])
 
+useEffect(() => {
+    if(id){
+        const singleMemory = userMemories.find((memory) => (memory._id === id));
+        setMemoryData({...singleMemory});
+    }
+},[id])
 
 
 
@@ -45,7 +52,12 @@ const handleSubmit = (e) => {
     e.preventDefault();
     if (title && description && tags){
         const updatedMemoryData = {...memoryData,name: user?.result?.name}
-        dispatch(createMemory({updatedMemoryData,navigate,toast}));
+        if(!id){
+            dispatch(createMemory({updatedMemoryData,navigate,toast}));
+        }else{
+            dispatch(updateMemory({id,updatedMemoryData,toast,navigate}))
+        }
+       
         handleClear();
     }
 
@@ -67,7 +79,7 @@ const handleDeleteTag = (deleteTag) => {
   return (
     <div style={{margin:"auto",padding:"15px",maxWidth:"450px",alignContent:"center",marginTop:"120px"}}className="container">
         <MDBCard alignment='center'>
-            <h5> Add Tour</h5>
+            <h5> {id?"Update Memory" : " Memory"}</h5>
             <MDBCardBody>
             <MDBValidation onSubmit={handleSubmit} className="row g-3" noValidate>
                 <div className='col-md-12'>
@@ -115,7 +127,7 @@ const handleDeleteTag = (deleteTag) => {
 
                 </div>
                 <div className='col-12'>
-                    <MDBBtn style={{width:"100%"}}> Submit</MDBBtn>
+                    <MDBBtn style={{width:"100%"}}> {id? "Update" :"Submit"}</MDBBtn>
                     <MDBBtn style={{width:"100%"}} 
                     className="mt-2" 
                     color='danger'

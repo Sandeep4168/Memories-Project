@@ -15,7 +15,7 @@ export const createMemory = createAsyncThunk("memory/createMemory",async({update
     }
 })
 
-export const getMemory = createAsyncThunk("memory/getMemory",async(_,{rejectWithValue}) => {
+export const getMemories = createAsyncThunk("memory/getMemories",async(_,{rejectWithValue}) => {
     try{
         const response= await api.getMemories();
        
@@ -30,6 +30,40 @@ export const getSingleMemory = createAsyncThunk("memory/getSingleMemory",async(i
     try{
         const response= await api.getMemory(id);
        
+        return response.data;
+
+    }catch(err){
+        return rejectWithValue(err.response.data);
+    }
+})
+
+export const getMemoriesByUser = createAsyncThunk("memory/getMemoriesByUser",async(userId,{rejectWithValue}) => {
+    try{
+        const response= await api.getMemoriesByUser(userId);
+       
+        return response.data;
+
+    }catch(err){
+        return rejectWithValue(err.response.data);
+    }
+})
+
+export const deleteMemory = createAsyncThunk("memory/deleteMemory",async({id,toast},{rejectWithValue}) => {
+    try{
+        const response= await api.deleteMemory(id);
+       toast.success("Memory deleted successfully")
+        return response.data;
+
+    }catch(err){
+        return rejectWithValue(err.response.data);
+    }
+})
+
+export const updateMemory = createAsyncThunk("memory/updateMemory",async({updatedMemoryData,navigate,id,toast},{rejectWithValue}) => {
+    try{
+        const response= await api.updateMemory(id,updatedMemoryData);
+       toast.success("Memory updated successfully")
+       navigate("/")
         return response.data;
 
     }catch(err){
@@ -59,14 +93,14 @@ const memorySlice = createSlice({
             state.loading = false;
             state.error = action.payload.message;
         },
-        [getMemory.pending]: (state,action) => {
+        [getMemories.pending]: (state,action) => {
             state.loading = true
         },
-        [getMemory.fulfilled] : (state,action) => {
+        [getMemories.fulfilled] : (state,action) => {
             state.loading = false;
             state.memories = action.payload;
         },
-        [getMemory.rejected]:(state,action) => {
+        [getMemories.rejected]:(state,action) => {
             state.loading = false;
             state.error = action.payload.message;
         },
@@ -78,6 +112,49 @@ const memorySlice = createSlice({
             state.memory = action.payload;
         },
         [getSingleMemory.rejected]:(state,action) => {
+            state.loading = false;
+            state.error = action.payload.message;
+        },
+        [getMemoriesByUser.pending]: (state,action) => {
+            state.loading = true
+        },
+        [getMemoriesByUser.fulfilled] : (state,action) => {
+            state.loading = false;
+            state.userMemories = action.payload;
+        },
+        [getMemoriesByUser.rejected]:(state,action) => {
+            state.loading = false;
+            state.error = action.payload.message;
+        },
+        [deleteMemory.pending]: (state,action) => {
+            state.loading = true
+        },
+        [deleteMemory.fulfilled] : (state,action) => {
+            state.loading = false;
+            console.log("action",action)
+            const {arg:{id}} = action.meta;
+            if(id){
+                state.userMemories = state.userMemories.filter((item) => (item._id !== id))
+                state.memories = state.memories.filter((item) => (item._id !== id))
+            }
+        },
+        [deleteMemory.rejected]:(state,action) => {
+            state.loading = false;
+            state.error = action.payload.message;
+        },
+        [updateMemory.pending]: (state,action) => {
+            state.loading = true
+        },
+        [updateMemory.fulfilled] : (state,action) => {
+            state.loading = false;
+            console.log("action",action)
+            const {arg:{id}} = action.meta;
+            if(id){
+                state.userMemories = state.userMemories.map((item) => (item._id === id ? action.payload:item))
+                state.memories = state.memories.map((item) => (item._id === id ? action.payload : item))
+            }
+        },
+        [updateMemory.rejected]:(state,action) => {
             state.loading = false;
             state.error = action.payload.message;
         },

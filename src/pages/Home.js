@@ -6,20 +6,24 @@ MDBTypography,
 } from "mdb-react-ui-kit"
 import {useDispatch,useSelector} from "react-redux"
 import {Link} from "react-dom"
-import { getMemory } from '../redux/features/memorySlice'
+import { getMemories } from '../redux/features/memorySlice'
 import CardMemory from '../components/CardMemory'
+import Spinner from "../components/Spinner";
 
 const Home = () => {
   const dispatch = useDispatch();
-  const {memories,loading} = useSelector((state) => ({...state.memory,}));
-
+  const {memories,loading} = useSelector((state) => ({...state.memory}));
+   
+console.log({memories})
 
 
 useEffect(() => {
-  dispatch(getMemory());
+  dispatch(getMemories());
 },[])
 
-
+if (loading){
+  return <Spinner/>
+}
 
 
 
@@ -41,8 +45,7 @@ useEffect(() => {
         <MDBCol>
           <MDBContainer>
             <MDBRow className="row-cols-1 row-cols-md-3 g-2">
-            {memories && memories.map((item,index) => console.log(item,index))}
-            {memories && memories.map((item,index) => <CardMemory key={index} {...item}/>)}
+            {memories && memories.map((item,index) => (<CardMemory key={index} {...item}/>))}
 
             </MDBRow>
           </MDBContainer>

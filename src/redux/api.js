@@ -19,3 +19,6 @@ export const createMemory = (memoryData) => API.post("/memory",memoryData);
 
 export const getMemories = () => API.get("/memory");
 export const getMemory = (id) => API.get(`/memory/${id}`);
+export const deleteMemory = (id) => API.delete(`/memory/${id}`);
+export const updateMemory = (id,updatedMemoryData) => API.patch(`/memory/${id}`,updatedMemoryData);
+export const getMemoriesByUser = (userId) => API.get(`/memory/userMemories/${userId}`); 
