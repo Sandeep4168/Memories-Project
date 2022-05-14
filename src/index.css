@@ -3,6 +3,7 @@ body {
   font-family: Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: "#417D7A";
 }
 
 code {
@@ -11,9 +12,9 @@ code {
 }
 
 .header-text{
-  color:#606080;
+  color:#4d4d88;
   font-weight: 500;
-  margin-top: 7px;
+  margin-top: 17px;
   font-size: 17px;
 
 }

@@ -14,6 +14,7 @@ import { useEffect } from 'react';
 import {setUser} from "../src/redux/features/authSlice"
 import SingleMemory from './pages/SingleMemory';
 import Dashboard from './pages/Dashboard';
+import NotFound from './pages/NotFound';
 
 function App() {
   const dispatch = useDispatch();
@@ -37,6 +38,7 @@ function App() {
           <Route path='/editMemory/:id' element={<AddEditMemory/>}/>
           <Route path='/memory/:id' element={<SingleMemory/>}/>
           <Route path='/dashboard' element={<Dashboard/>}/>
+          <Route path="*" element={<NotFound/>}/>
 
         </Routes>
 
